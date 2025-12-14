@@ -17,7 +17,7 @@ export function MfaSettings() {
   const [setupModalOpen, setSetupModalOpen] = useState(false);
   const [disableModalOpen, setDisableModalOpen] = useState(false);
   const [backupCodesModalOpen, setBackupCodesModalOpen] = useState(false);
-  const { hasLicenseKey } = useLicense();
+  // const { hasLicenseKey } = useLicense();
 
   const { data: mfaStatus, isLoading } = useQuery({
     queryKey: ["mfa-status"],
@@ -28,7 +28,7 @@ export function MfaSettings() {
     return null;
   }
 
-  const canUseMfa = isCloud() || hasLicenseKey;
+  const canUseMfa = true;
 
   // Check if MFA is truly enabled
   const isMfaEnabled = mfaStatus?.isEnabled === true;

@@ -146,28 +146,6 @@ export default function SettingsSidebar() {
   }, [location.pathname]);
 
   const canShowItem = (item: DataItem) => {
-    if (item.showDisabledInNonEE && item.isEnterprise) {
-      // Check admin permission regardless of license
-      return item.isAdmin ? isAdmin : true;
-    }
-
-    if (item.isCloud && item.isEnterprise) {
-      if (!(isCloud() || workspace?.hasLicenseKey)) return false;
-      return item.isAdmin ? isAdmin : true;
-    }
-
-    if (item.isCloud) {
-      return isCloud() ? (item.isAdmin ? isAdmin : true) : false;
-    }
-
-    if (item.isSelfhosted) {
-      return !isCloud() ? (item.isAdmin ? isAdmin : true) : false;
-    }
-
-    if (item.isEnterprise) {
-      return workspace?.hasLicenseKey ? (item.isAdmin ? isAdmin : true) : false;
-    }
-
     if (item.isAdmin) {
       return isAdmin;
     }
@@ -176,14 +154,12 @@ export default function SettingsSidebar() {
   };
 
   const isItemDisabled = (item: DataItem) => {
-    if (item.showDisabledInNonEE && item.isEnterprise) {
-      return !(isCloud() || workspace?.hasLicenseKey);
-    }
+    // With licensing open, keep all items enabled
     return false;
   };
 
   const menuItems = groupedData.map((group) => {
-    if (group.heading === "System" && (!isAdmin || isCloud())) {
+    if (group.heading === "System" && (!isAdmin)) {
       return null;
     }
 
@@ -260,19 +236,6 @@ export default function SettingsSidebar() {
             </Link>
           );
 
-          if (isDisabled) {
-            return (
-              <Tooltip
-                key={item.label}
-                label={t("Available in enterprise edition")}
-                position="right"
-                withArrow
-              >
-                {linkElement}
-              </Tooltip>
-            );
-          }
-
           return linkElement;
         })}
       </div>
@@ -300,20 +263,8 @@ export default function SettingsSidebar() {
 
       <ScrollArea w="100%">{menuItems}</ScrollArea>
 
-      {!isCloud() && <AppVersion />}
+      <AppVersion />
 
-      {isCloud() && (
-        <div className={classes.text}>
-          <Text
-            size="sm"
-            c="dimmed"
-            component="a"
-            href="mailto:help@docmost.com"
-          >
-            help@docmost.com
-          </Text>
-        </div>
-      )}
     </div>
   );
 }

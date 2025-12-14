@@ -7,10 +7,12 @@ import {
   UseGuards,
   NotFoundException,
   ForbiddenException,
+  Logger,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { ResolveCommentDto } from './dto/resolve-comment.dto';
 import { PageIdDto, CommentIdDto } from './dto/comments.input';
 import { AuthUser } from '../../common/decorators/auth-user.decorator';
 import { AuthWorkspace } from '../../common/decorators/auth-workspace.decorator';
@@ -28,6 +30,7 @@ import { CommentRepo } from '@docmost/db/repos/comment/comment.repo';
 @UseGuards(JwtAuthGuard)
 @Controller('comments')
 export class CommentController {
+  private readonly logger = new Logger(CommentController.name);
   constructor(
     private readonly commentService: CommentService,
     private readonly commentRepo: CommentRepo,
@@ -42,24 +45,29 @@ export class CommentController {
     @AuthUser() user: User,
     @AuthWorkspace() workspace: Workspace,
   ) {
-    const page = await this.pageRepo.findById(createCommentDto.pageId);
-    if (!page || page.deletedAt) {
-      throw new NotFoundException('Page not found');
-    }
+    try {
+      const page = await this.pageRepo.findById(createCommentDto.pageId);
+      if (!page || page.deletedAt) {
+        throw new NotFoundException('Page not found');
+      }
 
-    const ability = await this.spaceAbility.createForUser(user, page.spaceId);
-    if (ability.cannot(SpaceCaslAction.Create, SpaceCaslSubject.Page)) {
-      throw new ForbiddenException();
-    }
+      const ability = await this.spaceAbility.createForUser(user, page.spaceId);
+      if (ability.cannot(SpaceCaslAction.Create, SpaceCaslSubject.Page)) {
+        throw new ForbiddenException();
+      }
 
-    return this.commentService.create(
-      {
-        userId: user.id,
-        page,
-        workspaceId: workspace.id,
-      },
-      createCommentDto,
-    );
+      return this.commentService.create(
+        {
+          userId: user.id,
+          page,
+          workspaceId: workspace.id,
+        },
+        createCommentDto,
+      );
+    } catch (err) {
+      this.logger.error('Failed to create comment', err as any);
+      throw err;
+    }
   }
 
   @HttpCode(HttpStatus.OK)
@@ -121,6 +129,32 @@ export class CommentController {
     }
 
     return this.commentService.update(comment, dto, user);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('resolve')
+  async resolve(
+    @Body() dto: ResolveCommentDto,
+    @AuthUser() user: User,
+  ) {
+    const comment = await this.commentRepo.findById(dto.commentId);
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+
+    const ability = await this.spaceAbility.createForUser(
+      user,
+      comment.spaceId,
+    );
+
+    // must be a space member with edit permission
+    if (ability.cannot(SpaceCaslAction.Edit, SpaceCaslSubject.Page)) {
+      throw new ForbiddenException(
+        'You must have space edit permission to resolve comments',
+      );
+    }
+
+    return this.commentService.resolve(comment, dto.resolved, user);
   }
 
   @HttpCode(HttpStatus.OK)

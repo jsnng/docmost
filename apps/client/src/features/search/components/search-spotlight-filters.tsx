@@ -43,7 +43,7 @@ export function SearchSpotlightFilters({
   isAiMode = false,
 }: SearchSpotlightFiltersProps) {
   const { t } = useTranslation();
-  const { hasLicenseKey } = useLicense();
+  // const { hasLicenseKey } = useLicense();
   const [selectedSpaceId, setSelectedSpaceId] = useState<string | null>(
     spaceId || null,
   );
@@ -89,7 +89,7 @@ export function SearchSpotlightFilters({
     {
       value: "attachment",
       label: t("Attachments"),
-      disabled: !isCloud() && !hasLicenseKey,
+      disabled: false,
     },
   ];
 

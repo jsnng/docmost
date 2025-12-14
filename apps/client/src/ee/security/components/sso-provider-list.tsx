@@ -31,6 +31,7 @@ import { GoogleIcon } from "@/components/icons/google-icon.tsx";
 import { CustomAvatar } from "@/components/ui/custom-avatar.tsx";
 import RoleSelectMenu from "@/components/ui/role-select-menu.tsx";
 import { getUserRoleLabel } from "@/features/workspace/types/user-role-data.ts";
+import CreateSsoProvider from "@/ee/security/components/create-sso-provider.tsx";
 
 export default function SsoProviderList() {
   const { t } = useTranslation();
@@ -44,7 +45,12 @@ export default function SsoProviderList() {
   }
 
   if (data?.length === 0) {
-    return <Text c="dimmed">{t("No SSO providers found.")}</Text>;
+    return (
+      <Group justify="space-between" align="center">
+        <Text c="dimmed">{t("No SSO providers found.")}</Text>
+        <CreateSsoProvider />
+      </Group>
+    );
   }
 
   const handleEdit = (provider: IAuthProvider) => {

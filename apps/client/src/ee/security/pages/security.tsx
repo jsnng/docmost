@@ -16,7 +16,7 @@ import EnforceMfa from "@/ee/security/components/enforce-mfa.tsx";
 export default function Security() {
   const { t } = useTranslation();
   const { isAdmin } = useUserRole();
-  const { hasLicenseKey } = useLicense();
+  // const { hasLicenseKey } = useLicense();
   const { isBusiness } = usePlan();
 
   if (!isAdmin) {
@@ -40,16 +40,13 @@ export default function Security() {
 
       <Title order={4} my="lg">
         Single sign-on (SSO)
-      </Title>
-
-      {(isCloud() && isBusiness) || (!isCloud() && hasLicenseKey) ? (
-        <>
+      </Title>        
+      <>
           <EnforceSso />
           <Divider my="lg" />
           <CreateSsoProvider />
           <Divider size={0} my="lg" />
         </>
-      ) : null}
 
       <SsoProviderList />
     </>

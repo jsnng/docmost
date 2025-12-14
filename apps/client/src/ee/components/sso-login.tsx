@@ -57,7 +57,6 @@ export default function SsoLogin() {
         />
       )}
 
-      {(isCloud() || data.hasLicenseKey) && (
         <>
           <Stack align="stretch" justify="center" gap="sm">
             {data.authProviders.map((provider) => (
@@ -78,7 +77,6 @@ export default function SsoLogin() {
             <Divider my="xs" label="OR" labelPosition="center" />
           )}
         </>
-      )}
     </>
   );
 }

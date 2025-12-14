@@ -37,9 +37,8 @@ export function AiSearchToggle({ size, label }: AiSearchToggleProps) {
   const { t } = useTranslation();
   const [workspace, setWorkspace] = useAtom(workspaceAtom);
   const [checked, setChecked] = useState(workspace?.settings?.ai?.search);
-  const { hasLicenseKey } = useLicense();
 
-  const hasAccess = isCloud() || (!isCloud() && hasLicenseKey);
+  const hasAccess = isCloud();
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.currentTarget.checked;

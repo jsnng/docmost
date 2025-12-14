@@ -39,7 +39,7 @@ export function getSubdomainHost(): string {
 }
 
 export function isCloud(): boolean {
-  return castToBoolean(getConfigValue("CLOUD"));
+  return true;
 }
 
 export function getAvatarUrl(

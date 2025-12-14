@@ -12,13 +12,13 @@ import { IconInfoCircle } from "@tabler/icons-react";
 export default function AiSettings() {
   const { t } = useTranslation();
   const { isAdmin } = useUserRole();
-  const { hasLicenseKey } = useLicense();
+  // const { hasLicenseKey } = useLicense();
 
   if (!isAdmin) {
     return null;
   }
 
-  const hasAccess = isCloud() || (!isCloud() && hasLicenseKey);
+  const hasAccess = true;
 
   return (
     <>

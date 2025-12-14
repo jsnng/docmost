@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "0.24.0",
+  "version": "0.24.1",
   "description": "",
   "author": "",
   "private": true,
@@ -82,6 +82,7 @@
     "nodemailer": "^7.0.11",
     "openid-client": "^5.7.1",
     "otpauth": "^9.4.0",
+    "qrcode": "^1.5.4",
     "p-limit": "^6.2.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",

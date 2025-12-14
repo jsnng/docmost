@@ -19,7 +19,6 @@ interface SearchSpotlightProps {
 }
 export function SearchSpotlight({ spaceId }: SearchSpotlightProps) {
   const { t } = useTranslation();
-  const { hasLicenseKey } = useLicense();
   const [query, setQuery] = useState("");
   const [debouncedSearchQuery] = useDebouncedValue(query, 300);
   const [filters, setFilters] = useState<{
@@ -84,7 +83,7 @@ export function SearchSpotlight({ spaceId }: SearchSpotlightProps) {
 
   // Determine result type for rendering
   const isAttachmentSearch =
-    filters.contentType === "attachment" && (hasLicenseKey || isCloud());
+    filters.contentType === "attachment" && (isCloud());
 
   const resultItems = (searchResults || []).map((result) => (
     <SearchResultItem
@@ -134,7 +133,7 @@ export function SearchSpotlight({ spaceId }: SearchSpotlightProps) {
               }
             }}
           />
-          {isAiMode && hasLicenseKey && (
+          {isAiMode && (
             <Button
               size="xs"
               leftSection={<IconSparkles size={16} />}

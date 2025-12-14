@@ -105,4 +105,29 @@ export class CommentService {
 
     return comment;
   }
+
+  async resolve(
+    comment: Comment,
+    resolved: boolean,
+    authUser: User,
+  ): Promise<Comment> {
+    const resolvedAt = resolved ? new Date() : null;
+    const resolvedById = resolved ? authUser.id : null;
+
+    await this.commentRepo.updateComment(
+      {
+        resolvedAt,
+        resolvedById,
+      },
+      comment.id,
+    );
+
+    // Return fresh copy including resolver projection
+    const updated = await this.commentRepo.findById(comment.id, {
+      includeCreator: true,
+      includeResolvedBy: true,
+    });
+
+    return updated ?? { ...comment, resolvedAt, resolvedById };
+  }
 }

@@ -95,6 +95,6 @@ export function hasLicenseOrEE(opts: {
   plan: string;
   isCloud: boolean;
 }): boolean {
-  const { licenseKey, plan, isCloud } = opts;
-  return Boolean(licenseKey) || (isCloud && plan === 'business');
+  // Licensing disabled: always grant access
+  return true;
 }

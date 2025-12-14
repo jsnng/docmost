@@ -3,7 +3,7 @@ import { currentUserAtom } from "@/features/user/atoms/current-user-atom.ts";
 
 export const useLicense = () => {
   const [currentUser] = useAtom(currentUserAtom);
-  return { hasLicenseKey: currentUser?.workspace?.hasLicenseKey };
+  return true;
 };
 
 export default useLicense;

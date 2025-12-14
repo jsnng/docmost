@@ -95,7 +95,7 @@ export class WorkspaceService {
 
     return {
       ...rest,
-      hasLicenseKey: Boolean(licenseKey),
+      hasLicenseKey: true,
     };
   }
 
@@ -369,7 +369,7 @@ export class WorkspaceService {
     const { licenseKey, ...rest } = workspace;
     return {
       ...rest,
-      hasLicenseKey: Boolean(licenseKey),
+      hasLicenseKey: true,
     };
   }
 

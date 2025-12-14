@@ -42,7 +42,18 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       return this.validateApiKey(req, payload as JwtApiKeyPayload);
     }
 
-    if (payload.type !== JwtType.ACCESS) {
+    const tokenType = (payload as any)?.type as JwtType;
+    const isMfaToken = tokenType === JwtType.MFA_TOKEN;
+
+    if (
+      isMfaToken &&
+      !req?.url?.includes('/mfa') &&
+      !req?.raw?.url?.includes('/mfa')
+    ) {
+      throw new UnauthorizedException();
+    }
+
+    if (!isMfaToken && payload.type !== JwtType.ACCESS) {
       throw new UnauthorizedException();
     }
 
@@ -57,7 +68,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new UnauthorizedException();
     }
 
-    return { user, workspace };
+    return { user, workspace, tokenType };
   }
 
   private async validateApiKey(req: any, payload: JwtApiKeyPayload) {
